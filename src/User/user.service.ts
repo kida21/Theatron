@@ -26,9 +26,13 @@ export class UserService{
   }
   async getUserById(id:string) {
     try {
-      return await this.userModel.findById(id)
+      const user = await this.userModel.findById(id)
+      if (!user) {
+        throw new NotFoundException()
+      }
+      return user
    } catch (err) {
-      throw new HttpException(err,HttpStatus.NOT_FOUND)
+      throw new NotFoundException(err)
     }
   }
     
@@ -52,12 +56,17 @@ export class UserService{
       throw new HttpException(err,HttpStatus.FORBIDDEN)
     }
   }
-     async DeleteUser(id: string) {
-    try {
-       return await this.userModel.findByIdAndDelete(id);
+     async DeleteUser(id:any) {
+       try {
+        
+      const deleted = await this.userModel.findById(id)
+      if (!deleted) {
+        throw new NotFoundException('user not found with specified id')
+      }
+      return deleted.deleteOne()
     }
     catch (err) {
-      throw new HttpException(err,HttpStatus.FORBIDDEN)
+      throw new NotFoundException(err);
     }
   }
 }

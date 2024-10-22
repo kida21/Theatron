@@ -11,13 +11,11 @@ export class UserController{
     @Get()
     @UseGuards(JwtAuthGuard)
     getUsers(@CurrentUser() user: User) {
-        console.log(user)
+        // console.log(user)
         return  this.userService.getUsers()
     }
-    @Get('/:id')
-    getUser(@Param('id')id) {
-       return  this.userService.getUserById(id) 
-    }
+    
+
     @Post()
     createUser(@Body() createUserDto:UserDto){
         return this.userService.CreateUser(createUserDto)
@@ -26,9 +24,15 @@ export class UserController{
     updateUser(@Param('id') id ,@Body() updateUserDto:UserDto) {
         return this.userService.UpdateUser(id, updateUserDto);
     }
+
     @Delete('/:id')
-    deleteUser(@Param('id') id) {
-         this.userService.DeleteUser(id)
+    deleteUser(@Param('id') id:any) {
+       return  this.userService.DeleteUser(id)
+    }
+
+    @Get('/:id')
+    getUser(@Param('id') id:string) {
+       return this.userService.getUserById(id)
     }
 
 
