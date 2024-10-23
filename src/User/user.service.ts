@@ -26,13 +26,10 @@ export class UserService{
   }
   async getUserById(id:string) {
     try {
-      const user = await this.userModel.findById(id)
-      if (!user) {
-        throw new NotFoundException()
-      }
-      return user
+      return await this.userModel.findById(id)
+    
    } catch (err) {
-      throw new NotFoundException(err)
+      throw new NotFoundException({message:'user not found with this id'})
     }
   }
     
@@ -50,7 +47,12 @@ export class UserService{
   }
   async UpdateUser(id: string, updateUserDto: UserDto) {
     try {
-       return await this.userModel.findByIdAndUpdate(id, updateUserDto);
+      const user = await this.userModel.findById(id);
+      if (!user) {
+        throw new NotFoundException();
+      }
+      return await user.updateOne(updateUserDto)
+      
     }
     catch (err) {
       throw new HttpException(err,HttpStatus.FORBIDDEN)
